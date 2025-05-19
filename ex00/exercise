@@ -1,0 +1,7 @@
+TODO
+- Download Linus’s latest git tree from git.kernel.org
+- Build it, install it, and boot it. but you must enable CONFIG_LOCALVERSION_AUTO=y.
+
+Turn in
+• Kernel boot log ﬁle.
+• Your ˙conﬁg ﬁle
