@@ -1,0 +1,11 @@
+--- Makefile.bak	2025-06-10 13:33:55.079403038 +0700
++++ Makefile	2025-06-10 13:35:35.919640113 +0700
+@@ -2,7 +2,7 @@
+ VERSION = 6
+ PATCHLEVEL = 14
+ SUBLEVEL = 0
+-EXTRAVERSION =
++EXTRAVERSION = -thor_kernel
+ NAME = Baby Opossum Posse
+ 
+ # *DOCUMENTATION*
