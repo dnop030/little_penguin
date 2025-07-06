@@ -1,4 +1,6 @@
 -using "udevadm monitor --property --udev"
  to obtain Dev Path of keyboard in order to get ATTR
 
--using "udevadm control --reload-rules && udevadm trigger
+-using "udevadm control --reload-rules && udevadm trigger"
+
+-using "dmesg -Tw" to open kernel msg
