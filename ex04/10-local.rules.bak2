@@ -1,0 +1,2 @@
+SUBSYSTEM=="usb", ACTION=="add", ATTR{bInterfaceClass}=="03", ATTR{bInterfaceProtocol}=="01", RUN+="/sbin/insmod /home/pond/42/little_penguin/ex01/hello.ko"
+SUBSYSTEM=="usb", ACTION=="remove", ENV{ID_USB_INTERFACES}=="*:030101:*", RUN+="/bin/bash /tmp/trigger.sh"
