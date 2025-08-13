@@ -1,9 +1,9 @@
 #include "../include/main.h"
 
 ssize_t fortwo_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
-	char	intra_name[9] = "psrikamo\n";
-	size_t	intra_len = strlen(intra_name);
-	int		result;
+	char	intra_name[10] = "psrikamo\n";
+	int	intra_len = strlen(intra_name);
+	int	result;
 
 	if (*offset >= intra_len)
 		return 0;
@@ -12,7 +12,7 @@ ssize_t fortwo_read (struct file *filp, char __user *usr_spac_buff, size_t count
 	printk(KERN_INFO "42 rd fn:%d\n", result);
 	*offset += intra_len;
 
-	return result;
+	return intra_len;
 }
 
 ssize_t fortwo_write (struct file *filp, const char __user *usr_spac_buff, size_t count, loff_t *offset) {
