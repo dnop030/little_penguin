@@ -16,11 +16,25 @@ ssize_t fortwo_read (struct file *filp, char __user *usr_spac_buff, size_t count
 }
 
 ssize_t fortwo_write (struct file *filp, const char __user *usr_spac_buff, size_t count, loff_t *offset) {
-	char	intra_name[8] = "psrikamo";
+	char	tmp_buff[9];
+	char	intra_name[9] = "psrikamo";
 	int		result;
+	int		i;
 
-	printk(KERN_INFO "42 wr fn\n");
-	return 0;
+	result = copy_from_user(tmp_buff, usr_spac_buff, strlen(intra_name));
+	i = 0;
+	while (i <= strlen(intra_name))
+	{
+		printk(KERN_INFO "42 wr fn cmp:%d src:%c dest:%c\n", i, intra_name[i], tmp_buff[i]);
+		if (tmp_buff[i] != intra_name[i])
+		{
+			printk(KERN_INFO "42 wr fn wrong wr msg\n");
+			return -EINVAL;
+		}
+		i++;
+	}
+	printk(KERN_INFO "42 wr fn correct wr msg\n");
+	return strlen(intra_name);
 }
 
 int fortwo_open (struct inode *inode, struct file *filp) {
