@@ -5,12 +5,12 @@ ssize_t fortwo_read (struct file *filp, char __user *usr_spac_buff, size_t count
 	size_t	intra_len = strlen(intra_name);
 	int		result;
 
-	if (offset >= intra_len)
+	if (*offset >= intra_len)
 		return 0;
 
 	result = copy_to_user(usr_spac_buff, intra_name, intra_len);
 	printk(KERN_INFO "42 rd fn:%d\n", result);
-	*offset += result;
+	*offset += intra_len;
 
 	return result;
 }
@@ -59,17 +59,18 @@ struct miscdevice fortytwo_misc_chr_dev = {
 	.fops = &fops,
 };
 
-int	__init driver_init(void) {
+// int	__init driver_init(void) {
+int	__init fortwo_init(void) {
 	int	err_num;
 
 	// register misc driver
 	err_num = misc_register(&fortytwo_misc_chr_dev);
 	if (err_num) {
-		// printk(KERN_INFO "register driver failed!\n");
+		printk(KERN_INFO "register driver failed!\n");
 		return err_num;
 	}
 
-	// printk(KERN_INFO "register misc chr succes!\n", );
+	printk(KERN_INFO "register misc chr success!\n");
 	return 0;
 }
 
@@ -78,7 +79,7 @@ void	__exit driver_exit(void) {
 	printk(KERN_INFO "Cleaning up misc chr.\n");
 }
 
-module_init(driver_init);
+module_init(fortwo_init);
 module_exit(driver_exit);
 
 MODULE_LICENSE("GPL");

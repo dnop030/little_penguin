@@ -10,7 +10,7 @@ ssize_t fortwo_write (struct file *filp, const char __user *usr_spac_buff, size_
 int fortwo_open (struct inode *inode, struct file *filp);
 int fortwo_release (struct inode *inode, struct file *filp);
 
-int driver_init(void);
+int fortwo_init(void);
 void	driver_exit(void);
 
 #endif
