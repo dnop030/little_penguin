@@ -1,7 +1,7 @@
 #include "../include/main.h"
 
 ssize_t fortwo_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
-	char	intra_name[10] = "psrikamo\n";
+	char	intra_name[9] = "psrikamo";
 	int	intra_len = strlen(intra_name);
 	int	result;
 

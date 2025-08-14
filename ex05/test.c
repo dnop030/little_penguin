@@ -36,10 +36,11 @@ int main() {
     printf("Read %zd bytes from device: '%s'\n", bytes_read, read_buffer);
 
     // Verify the read data
-    if (strcmp(read_buffer, "psrikamo\n") == 0) {
+    // if (strcmp(read_buffer, "psrikamo\n") == 0) {
+    if (strcmp(read_buffer, CORRECT_WRITE_MSG) == 0) {
         printf("✅ Read test successful! The returned data matches the expected string.\n");
     } else {
-        printf("❌ Read test failed! Expected 'psrikamo\\n', got '%s'\n", read_buffer);
+        printf("❌ Read test failed! Expected 'psrikamo', got '%s'\n", read_buffer);
     }
 
     // --- Part 2: Test writing the correct string to the device ---
