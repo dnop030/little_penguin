@@ -25,7 +25,6 @@ ssize_t fortwo_write (struct file *filp, const char __user *usr_spac_buff, size_
 	i = 0;
 	while (i <= strlen(intra_name))
 	{
-		printk(KERN_INFO "42 wr fn cmp:%d src:%c dest:%c\n", i, intra_name[i], tmp_buff[i]);
 		if (tmp_buff[i] != intra_name[i])
 		{
 			printk(KERN_INFO "42 wr fn wrong wr msg\n");
