@@ -52,16 +52,15 @@ ssize_t myfd_read(struct file *fp, char __user *user, size_t size, loff_t *offs)
 	printk(KERN_INFO "useless rd fn msg len:%zd msg:%s\n", strlen(str), str);
 	// for (t = strlen(str) - 1, i = 0; t >= 0; t--, i++) {
 	for (t = strlen(str) - 1, i = 0; i < strlen(str); t--, i++) {
-		printk(KERN_INFO "useless rd fn index:%zu\n", t);
+		// printk(KERN_INFO "useless rd fn index:%zu\n", t);
 		tmp2[i] = str[t];
 	}
 	// tmp2[i] = 0x0;
 	tmp2[i] = '\0';
-	printk(KERN_INFO "useless rd fn rev msg:%s\n", tmp2);
-	printk(KERN_INFO "useless rd fn i:%zu size:%zu len:%zu\n", i, size, strlen(tmp2));
-	// ret = simple_read_from_buffer(user, size, offs, tmp2, i); // problem here
-	ret = simple_read_from_buffer(user, size, offs, tmp2, strlen(tmp2)); // problem here
-	printk(KERN_INFO "useless rd fn ret:%zu\n", ret);
+	// printk(KERN_INFO "useless rd fn rev msg:%s\n", tmp2);
+	// printk(KERN_INFO "useless rd fn i:%zu size:%zu len:%zu\n", i, size, strlen(tmp2));
+	ret = simple_read_from_buffer(user, size, offs, tmp2, i);
+	// printk(KERN_INFO "useless rd fn ret:%zu\n", ret);
 	kfree(tmp2);
 	return ret;
 }
@@ -74,7 +73,7 @@ ssize_t myfd_write(struct file *fp, const char __user *user, size_t size,
 	// 0x0 = ’\0’
 	// str[size + 1] = 0x0;
 	str[size] = 0x0;
-	printk(KERN_INFO "useless wr fn msg:%s ret:%zu\n", str, res);
+	// printk(KERN_INFO "useless wr fn msg:%s ret:%zu\n", str, res);
 	return res;
 }
 module_init(myfd_init);
