@@ -15,14 +15,15 @@ int main() {
     char read_buffer[READ_BUFFER_SIZE];
     ssize_t bytes_read, bytes_written;
 
-    // --- Part 1: Test reading from the device ---
-    printf("--- Test 1: Reading from device ---\n");
+    printf("--- open device ---\n");
     fd = open(DEVICE_PATH, O_RDWR);
     if (fd < 0) {
         perror("Failed to open the device");
         return EXIT_FAILURE;
     }
 
+    // --- Part 1: Test reading from the device ---
+    printf("--- Test 1: Reading from device ---\n");
     // Attempt to read from the device
     bytes_read = read(fd, read_buffer, READ_BUFFER_SIZE);
     if (bytes_read < 0) {
@@ -42,6 +43,28 @@ int main() {
     } else {
         printf("❌ Read test failed! Expected 'psrikamo', got '%s'\n", read_buffer);
     }
+
+    // // --- Part 1.1: Test reading from the device ---
+    // printf("--- Test 1.1: Reading from device twice ---\n");
+    // // Attempt to read from the device
+    // bytes_read = read(fd, read_buffer, READ_BUFFER_SIZE);
+    // if (bytes_read < 0) {
+    //     perror("Failed to read from the device");
+    //     close(fd);
+    //     return EXIT_FAILURE;
+    // }
+
+    // // Null-terminate the string for safe printing and comparison
+    // read_buffer[bytes_read] = '\0';
+    // printf("Read %zd bytes from device: '%s'\n", bytes_read, read_buffer);
+
+    // // Verify the read data
+    // // if (strcmp(read_buffer, "psrikamo\n") == 0) {
+    // if (strcmp(read_buffer, CORRECT_WRITE_MSG) == 0) {
+    //     printf("✅ Read test successful! The returned data matches the expected string.\n");
+    // } else {
+    //     printf("❌ Read test failed! Expected 'psrikamo', got '%s'\n", read_buffer);
+    // }
 
     // --- Part 2: Test writing the correct string to the device ---
     printf("\n--- Test 2: Writing correct string ---\n");
@@ -80,6 +103,7 @@ int main() {
     }
 
     // Close the device
+    printf("--- close device ---\n");
     close(fd);
 
     return EXIT_SUCCESS;
