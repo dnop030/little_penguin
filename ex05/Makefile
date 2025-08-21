@@ -17,3 +17,5 @@ all:
 clean:
 	make -C $(KERN_DIR) M=$(PWD) clean
 
+re: clean all
+
