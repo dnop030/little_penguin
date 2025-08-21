@@ -6,12 +6,12 @@ ssize_t fortwo_read (struct file *filp, char __user *usr_spac_buff, size_t count
 	int	result;
 
 	printk(KERN_INFO "42 rd fn count:%zu\n", count);
-	if (*offset >= intra_len)
-		return 0;
+	// if (*offset >= intra_len)
+	// 	return 0;
 
 	result = copy_to_user(usr_spac_buff, intra_name, intra_len);
 	printk(KERN_INFO "42 rd fn res cpy2usr:%d\n", result);
-	*offset += intra_len;
+	// *offset += intra_len;
 
 	return intra_len;
 }
