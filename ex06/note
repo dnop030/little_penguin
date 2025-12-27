@@ -2,3 +2,6 @@ how to
 1.clone Linus Torvalds https://github.com/torvalds/linux.git
 2.add remote branch of linux-next "git remote add linux-next https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git"
 3.checkout linux-next from remote branch "git checkout linux-next/stable"
+4.select latest version of linux-nextt
+5.make oldconfig and enter until it's done
+6.afterthat install kernel as normal
