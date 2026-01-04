@@ -2,6 +2,8 @@
 
 struct dentry *root42;
 struct dentry *id;
+// struct dentry *jiffies;
+// struct dentry *foo;
 
 ssize_t id_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
 	char	intra_name[9] = "psrikamo";
@@ -44,22 +46,22 @@ ssize_t id_write (struct file *filp, const char __user *usr_spac_buff, size_t co
 	return strlen(intra_name);
 }
 
-int id_open (struct inode *inode, struct file *filp) {
-	printk(KERN_INFO "42 open fn\n");
-	return 0;
-}
+// int id_open (struct inode *inode, struct file *filp) {
+// 	printk(KERN_INFO "42 open fn\n");
+// 	return 0;
+// }
 
-int id_release (struct inode *inode, struct file *filp) {
-	printk(KERN_INFO "42 release fn\n");
-	return 0;
-}
+// int id_release (struct inode *inode, struct file *filp) {
+// 	printk(KERN_INFO "42 release fn\n");
+// 	return 0;
+// }
 
 struct file_operations id_fops = {
 	.owner = THIS_MODULE,
 	.read = id_read,
 	.write = id_write,
-	.open = id_open,
-	.release = id_release,
+	// .open = id_open,
+	// .release = id_release,
 };
 
 int	__init driver_init(void) {
