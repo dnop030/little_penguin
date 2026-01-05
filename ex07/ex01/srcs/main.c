@@ -64,12 +64,14 @@ ssize_t id_write (struct file *filp, const char __user *usr_spac_buff, size_t co
 	int		result;
 	int		i;
 
-	// printk(KERN_INFO "id wr offset:%lld\n", *offset);
-	// printk(KERN_INFO "id wr fn count:%zu\n", count);
+	printk(KERN_INFO "id wr offset:%lld\n", *offset);
+	printk(KERN_INFO "id wr fn count:%zu\n", count);
 
 	result = copy_from_user(tmp_buff, usr_spac_buff, strlen(intra_name));
 
-	// printk(KERN_INFO "id wr fn msg:%s\n", tmp_buff);
+	if ((tmp_buff[0] == '\n') && (count == 1)) {
+		return count;
+	}
 
 	i = 0;
 	while (i <= strlen(intra_name))
