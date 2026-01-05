@@ -3,7 +3,63 @@
 struct dentry *root42;
 struct dentry *id;
 struct dentry *jiffies_file;
-// struct dentry *foo;
+struct dentry *foo;
+
+ssize_t foo_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
+	char	intra_name[9] = "psrikamo";
+	int	intra_len = strlen(intra_name);
+	int	result;
+
+	printk(KERN_INFO "id rd offset:%lld\n", *offset);
+
+	// check wheather pointer of file is out of length of data available in kernel or not
+	if (*offset >= intra_len)
+		return 0;
+
+	printk(KERN_INFO "id rd fn count:%zu\n", count);
+
+	result = copy_to_user(usr_spac_buff, intra_name, intra_len);
+	printk(KERN_INFO "id rd fn res cpy2usr:%d\n", result);
+	*offset += intra_len;
+
+	return intra_len;
+}
+
+ssize_t foo_write (struct file *filp, const char __user *usr_spac_buff, size_t count, loff_t *offset) {
+	char	tmp_buff[9];
+	char	intra_name[9] = "psrikamo";
+	int		result;
+	int		i;
+
+	printk(KERN_INFO "id wr offset:%lld\n", *offset);
+	printk(KERN_INFO "id wr fn count:%zu\n", count);
+
+	result = copy_from_user(tmp_buff, usr_spac_buff, strlen(intra_name));
+
+	if ((tmp_buff[0] == '\n') && (count == 1)) {
+		return count;
+	}
+
+	i = 0;
+	while (i <= strlen(intra_name))
+	{
+		if (tmp_buff[i] != intra_name[i])
+		{
+			printk(KERN_INFO "id wr fn wrong wr msg\n");
+			return -EINVAL;
+		}
+		i++;
+	}
+
+	printk(KERN_INFO "id wr fn correct wr msg\n");
+	return strlen(intra_name);
+}
+
+struct file_operations foo_fops = {
+	.owner = THIS_MODULE,
+	.read = foo_read,
+	.write = foo_write,
+};
 
 ssize_t jiffies_file_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
 	unsigned long	j = jiffies;				// ดึงค่า jiffies ปัจจุบัน
@@ -128,6 +184,10 @@ int	__init driver_init(void) {
                                    &id_fops);
 
 	jiffies_file = debugfs_create_file("jiffies", 0444,
+                                   root42, NULL,
+                                   &jiffies_file_fops);
+
+	foo = debugfs_create_file("foo", 0644,
                                    root42, NULL,
                                    &jiffies_file_fops);
 
