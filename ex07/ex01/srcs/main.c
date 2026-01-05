@@ -2,24 +2,57 @@
 
 struct dentry *root42;
 struct dentry *id;
-// struct dentry *jiffies;
+struct dentry *jiffies_file;
 // struct dentry *foo;
+
+ssize_t jiffies_file_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
+	unsigned long	j = jiffies;				// ดึงค่า jiffies ปัจจุบัน
+	unsigned int	total_seconds = j / HZ;		// แปลงเป็นวินาที
+	unsigned int	mins = total_seconds / 60;
+	unsigned int	secs = total_seconds % 60;
+	char	buff[50];
+	static unsigned int	buff_len = 50;
+	unsigned int	result;
+	unsigned int	res_snprintf;
+
+	printk(KERN_INFO "jiffies rd offset:%lld\n", *offset);
+	printk(KERN_INFO "jiffies :%lu %u %u %u\n", *offset, total_seconds, mins, secs);
+
+	// check wheather pointer of file is out of length of data available in kernel or not
+	if (*offset >= buff_len)
+		return 0;
+
+	printk(KERN_INFO "jiffies rd fn count:%zu\n", count);
+	res_snprintf = snprintf(buff, 26,"uptime: %.2u min %.2u sec\n", mins, secs);
+	buff_len = strlen(buff);
+	result = copy_to_user(usr_spac_buff, buff, buff_len);
+	printk(KERN_INFO "jiffies rd fn res cpy2usr:%d\n", result);
+	*offset += buff_len;
+
+	return buff_len;
+}
+
+struct file_operations jiffies_file_fops = {
+	.owner = THIS_MODULE,
+	.read = jiffies_file_read,
+	// .write = id_write,
+};
 
 ssize_t id_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
 	char	intra_name[9] = "psrikamo";
 	int	intra_len = strlen(intra_name);
 	int	result;
 
-	printk(KERN_INFO "42 rd offset:%lld\n", *offset);
+	printk(KERN_INFO "id rd offset:%lld\n", *offset);
 
 	// check wheather pointer of file is out of length of data available in kernel or not
 	if (*offset >= intra_len)
 		return 0;
 
-	printk(KERN_INFO "42 rd fn count:%zu\n", count);
+	printk(KERN_INFO "id rd fn count:%zu\n", count);
 
 	result = copy_to_user(usr_spac_buff, intra_name, intra_len);
-	printk(KERN_INFO "42 rd fn res cpy2usr:%d\n", result);
+	printk(KERN_INFO "id rd fn res cpy2usr:%d\n", result);
 	*offset += intra_len;
 
 	return intra_len;
@@ -31,18 +64,25 @@ ssize_t id_write (struct file *filp, const char __user *usr_spac_buff, size_t co
 	int		result;
 	int		i;
 
+	// printk(KERN_INFO "id wr offset:%lld\n", *offset);
+	// printk(KERN_INFO "id wr fn count:%zu\n", count);
+
 	result = copy_from_user(tmp_buff, usr_spac_buff, strlen(intra_name));
+
+	// printk(KERN_INFO "id wr fn msg:%s\n", tmp_buff);
+
 	i = 0;
 	while (i <= strlen(intra_name))
 	{
 		if (tmp_buff[i] != intra_name[i])
 		{
-			printk(KERN_INFO "42 wr fn wrong wr msg\n");
+			printk(KERN_INFO "id wr fn wrong wr msg\n");
 			return -EINVAL;
 		}
 		i++;
 	}
-	printk(KERN_INFO "42 wr fn correct wr msg\n");
+
+	printk(KERN_INFO "id wr fn correct wr msg\n");
 	return strlen(intra_name);
 }
 
@@ -84,6 +124,10 @@ int	__init driver_init(void) {
 	id = debugfs_create_file("id", 0666,
                                    root42, NULL,
                                    &id_fops);
+
+	jiffies_file = debugfs_create_file("jiffies", 0444,
+                                   root42, NULL,
+                                   &jiffies_file_fops);
 
 	// if root42 != complete
 	// 	clear module and exit
