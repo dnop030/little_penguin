@@ -5,6 +5,8 @@ struct dentry *id;
 struct dentry *jiffies_file;
 struct dentry *foo;
 
+char	*foo_buff;
+
 ssize_t foo_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
 	char	intra_name[9] = "psrikamo";
 	int	intra_len = strlen(intra_name);
@@ -166,6 +168,11 @@ int	__init driver_init(void) {
 
 	printk(KERN_INFO "debugfs 42 init\n");
 
+	foo_buff = kmalloc(PAGE_SIZE, GFP_KERNEL);
+	if (foo_buff == NULL) {
+		return -ENOMEM;
+	}
+
 	root42 = debugfs_create_dir("fortytwo", NULL);
 	if (root42 == NULL) {
 		printk(KERN_INFO "debugfs 42 create dir error\n");
@@ -182,14 +189,23 @@ int	__init driver_init(void) {
 	id = debugfs_create_file("id", 0666,
                                    root42, NULL,
                                    &id_fops);
+	if (id == NULL) {
+		return -ERROR;
+	}
 
 	jiffies_file = debugfs_create_file("jiffies", 0444,
                                    root42, NULL,
                                    &jiffies_file_fops);
+	if (jiffies_file == NULL) {
+		return -ERROR;
+	}
 
 	foo = debugfs_create_file("foo", 0644,
                                    root42, NULL,
                                    &jiffies_file_fops);
+	if (foo == NULL) {
+		return -ERROR;
+	}
 
 	// if root42 != complete
 	// 	clear module and exit
