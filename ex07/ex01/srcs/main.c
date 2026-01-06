@@ -176,7 +176,7 @@ int	__init driver_init(void) {
 	root42 = debugfs_create_dir("fortytwo", NULL);
 	if (root42 == NULL) {
 		printk(KERN_INFO "debugfs 42 create dir error\n");
-		return root42;
+		return -ENODEV;
 	}
 
 	// debugfs_create_file(const char *name, umode_t mode,
@@ -190,21 +190,21 @@ int	__init driver_init(void) {
                                    root42, NULL,
                                    &id_fops);
 	if (id == NULL) {
-		return -ERROR;
+		return -ENODEV;
 	}
 
 	jiffies_file = debugfs_create_file("jiffies", 0444,
                                    root42, NULL,
                                    &jiffies_file_fops);
 	if (jiffies_file == NULL) {
-		return -ERROR;
+		return -ENODEV;
 	}
 
 	foo = debugfs_create_file("foo", 0644,
                                    root42, NULL,
                                    &jiffies_file_fops);
 	if (foo == NULL) {
-		return -ERROR;
+		return -ENODEV;
 	}
 
 	// if root42 != complete
