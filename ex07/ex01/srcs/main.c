@@ -8,53 +8,82 @@ struct dentry *foo;
 char	*foo_buff;
 
 ssize_t foo_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
-	char	intra_name[9] = "psrikamo";
-	int	intra_len = strlen(intra_name);
+	// char	intra_name[9] = "psrikamo";
+	// int	intra_len = strlen(intra_name);
 	int	result;
+	int	numb_rd;
+	int	res_numb_rd;
 
-	printk(KERN_INFO "id rd offset:%lld\n", *offset);
+	// printk(KERN_INFO "id rd offset:%lld\n", *offset);
 
-	// check wheather pointer of file is out of length of data available in kernel or not
-	if (*offset >= intra_len)
+	// // check wheather pointer of file is out of length of data available in kernel or not
+	// if (*offset >= intra_len)
+	// 	return 0;
+
+	// printk(KERN_INFO "id rd fn count:%zu\n", count);
+
+	// result = copy_to_user(usr_spac_buff, intra_name, intra_len);
+	// printk(KERN_INFO "id rd fn res cpy2usr:%d\n", result);
+	// *offset += intra_len;
+
+	// return intra_len;
+
+	// case offset morethan memory
+	if (*offset >= PAGE_SIZE)
 		return 0;
 
-	printk(KERN_INFO "id rd fn count:%zu\n", count);
+	if ((*offset) + count < PAGE_SIZE)
+		numb_rd = count;
+	else
+		numb_rd = PAGE_SIZE - (*offset);
 
-	result = copy_to_user(usr_spac_buff, intra_name, intra_len);
-	printk(KERN_INFO "id rd fn res cpy2usr:%d\n", result);
-	*offset += intra_len;
+	result = copy_to_user(usr_spac_buff, (foo_buff + (*offset)), numb_rd);
+	// *offset += result;
 
-	return intra_len;
+	if (result == 0)
+		res_numb_rd = numb_rd;
+	else
+		res_numb_rd = numb_rd - result;
+
+	*offset += res_numb_rd;
+
+	return res_numb_rd;
 }
 
 ssize_t foo_write (struct file *filp, const char __user *usr_spac_buff, size_t count, loff_t *offset) {
-	char	tmp_buff[9];
-	char	intra_name[9] = "psrikamo";
+	// char	tmp_buff[9];
+	// char	intra_name[9] = "psrikamo";
 	int		result;
-	int		i;
+	// int		i;
 
-	printk(KERN_INFO "id wr offset:%lld\n", *offset);
-	printk(KERN_INFO "id wr fn count:%zu\n", count);
+	// printk(KERN_INFO "id wr offset:%lld\n", *offset);
+	// printk(KERN_INFO "id wr fn count:%zu\n", count);
 
-	result = copy_from_user(tmp_buff, usr_spac_buff, strlen(intra_name));
+	// result = copy_from_user(tmp_buff, usr_spac_buff, strlen(intra_name));
 
-	if ((tmp_buff[0] == '\n') && (count == 1)) {
-		return count;
-	}
+	// if ((tmp_buff[0] == '\n') && (count == 1)) {
+	// 	return count;
+	// }
 
-	i = 0;
-	while (i <= strlen(intra_name))
-	{
-		if (tmp_buff[i] != intra_name[i])
-		{
-			printk(KERN_INFO "id wr fn wrong wr msg\n");
-			return -EINVAL;
-		}
-		i++;
-	}
+	// i = 0;
+	// while (i <= strlen(intra_name))
+	// {
+	// 	if (tmp_buff[i] != intra_name[i])
+	// 	{
+	// 		printk(KERN_INFO "id wr fn wrong wr msg\n");
+	// 		return -EINVAL;
+	// 	}
+	// 	i++;
+	// }
 
-	printk(KERN_INFO "id wr fn correct wr msg\n");
-	return strlen(intra_name);
+	// printk(KERN_INFO "id wr fn correct wr msg\n");
+	// return strlen(intra_name);
+
+	if (*offset >= PAGE_SIZE)
+		return -ENOMEM;
+
+	result = copy_from_user((foo_buff + *offset), usr_spac_buff, count);
+	return count;
 }
 
 struct file_operations foo_fops = {
@@ -169,7 +198,9 @@ int	__init driver_init(void) {
 	printk(KERN_INFO "debugfs 42 init\n");
 
 	foo_buff = kmalloc(PAGE_SIZE, GFP_KERNEL);
+	printk(KERN_INFO "debugfs 42 kmalloc size:%d\n", PAGE_SIZE);
 	if (foo_buff == NULL) {
+		printk(KERN_INFO "debugfs 42 Kmalloc error\n");
 		return -ENOMEM;
 	}
 
@@ -228,6 +259,7 @@ int	__init driver_init(void) {
 
 void	__exit driver_exit(void) {
 	printk(KERN_INFO "debugfs 42 clean-up\n");
+	kfree(foo_buff);
 	debugfs_remove(root42);
 }
 
