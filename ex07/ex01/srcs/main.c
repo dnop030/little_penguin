@@ -103,7 +103,7 @@ ssize_t jiffies_file_read (struct file *filp, char __user *usr_spac_buff, size_t
 	unsigned int	res_snprintf;
 
 	printk(KERN_INFO "jiffies rd offset:%lld\n", *offset);
-	printk(KERN_INFO "jiffies :%lu %u %u %u\n", *offset, total_seconds, mins, secs);
+	printk(KERN_INFO "jiffies offset:%lu totalSec:%u mins:%u secs:%u Hz:%u\n", *offset, total_seconds, mins, secs, HZ);
 
 	// check wheather pointer of file is out of length of data available in kernel or not
 	if (*offset >= buff_len)
