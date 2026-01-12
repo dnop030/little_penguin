@@ -156,9 +156,9 @@ ssize_t id_write (struct file *filp, const char __user *usr_spac_buff, size_t co
 
 	result = copy_from_user(tmp_buff, usr_spac_buff, strlen(intra_name));
 
-	if ((tmp_buff[0] == '\n') && (count == 1)) {
-		return count;
-	}
+	// if ((tmp_buff[0] == '\n') && (count == 1)) {
+	// 	return count;
+	// }
 
 	i = 0;
 	while (i <= strlen(intra_name))
