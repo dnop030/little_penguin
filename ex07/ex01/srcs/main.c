@@ -241,7 +241,7 @@ int	__init driver_init(void) {
 
 	foo = debugfs_create_file("foo", 0644,
                                    root42, NULL,
-                                   &jiffies_file_fops);
+                                   &foo_fops);
 	if (foo == NULL) {
 		return -ENODEV;
 	}
