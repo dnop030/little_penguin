@@ -53,7 +53,8 @@ ssize_t foo_read (struct file *filp, char __user *usr_spac_buff, size_t count, l
 ssize_t foo_write (struct file *filp, const char __user *usr_spac_buff, size_t count, loff_t *offset) {
 	// char	tmp_buff[9];
 	// char	intra_name[9] = "psrikamo";
-	int		result;
+	int	result;
+	int	real_wr;
 	// int		i;
 
 	// printk(KERN_INFO "id wr offset:%lld\n", *offset);
@@ -82,8 +83,15 @@ ssize_t foo_write (struct file *filp, const char __user *usr_spac_buff, size_t c
 	if (*offset >= PAGE_SIZE)
 		return -ENOMEM;
 
+	if ((*offset) + count >= PAGE_SIZE)
+		return -ENOMEM;
+
 	result = copy_from_user((foo_buff + *offset), usr_spac_buff, count);
-	return count;
+
+	real_wr = count - result;
+	*offset += real_wr;
+
+	return real_wr;
 }
 
 struct file_operations foo_fops = {
