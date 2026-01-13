@@ -14,13 +14,12 @@ ssize_t foo_read (struct file *filp, char __user *usr_spac_buff, size_t count, l
 	int	numb_rd;
 	int	res_numb_rd;
 
-	// printk(KERN_INFO "id rd offset:%lld\n", *offset);
+	printk(KERN_INFO "foo rd offset:%lld\n", *offset);
+	printk(KERN_INFO "foo rd fn count:%zu\n", count);
 
 	// // check wheather pointer of file is out of length of data available in kernel or not
 	// if (*offset >= intra_len)
 	// 	return 0;
-
-	// printk(KERN_INFO "id rd fn count:%zu\n", count);
 
 	// result = copy_to_user(usr_spac_buff, intra_name, intra_len);
 	// printk(KERN_INFO "id rd fn res cpy2usr:%d\n", result);
@@ -39,6 +38,7 @@ ssize_t foo_read (struct file *filp, char __user *usr_spac_buff, size_t count, l
 
 	result = copy_to_user(usr_spac_buff, (foo_buff + (*offset)), numb_rd);
 	// *offset += result;
+	printk(KERN_INFO "foo rd fn res cpy2usr:%d\n", result);
 
 	if (result == 0)
 		res_numb_rd = numb_rd;
@@ -57,8 +57,8 @@ ssize_t foo_write (struct file *filp, const char __user *usr_spac_buff, size_t c
 	int	real_wr;
 	// int		i;
 
-	// printk(KERN_INFO "id wr offset:%lld\n", *offset);
-	// printk(KERN_INFO "id wr fn count:%zu\n", count);
+	printk(KERN_INFO "foo wr offset:%lld\n", *offset);
+	printk(KERN_INFO "foo wr fn count:%zu\n", count);
 
 	// result = copy_from_user(tmp_buff, usr_spac_buff, strlen(intra_name));
 
@@ -87,6 +87,7 @@ ssize_t foo_write (struct file *filp, const char __user *usr_spac_buff, size_t c
 		return -ENOMEM;
 
 	result = copy_from_user((foo_buff + *offset), usr_spac_buff, count);
+	printk(KERN_INFO "foo wr fn res cpyFromUsr:%d\n", result);
 
 	real_wr = count - result;
 	*offset += real_wr;
