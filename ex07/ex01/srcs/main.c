@@ -7,17 +7,23 @@ struct dentry *foo;
 
 char	*foo_buff;
 
+struct mutex foo_mutex;
+
 ssize_t foo_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
 	int	result;
 	int	numb_rd;
 	int	res_numb_rd;
 
+	mutex_lock(&foo_mutex);
+
 	printk(KERN_INFO "foo rd offset:%lld\n", *offset);
 	printk(KERN_INFO "foo rd fn count:%zu\n", count);
 
 	// case offset morethan memory
-	if (*offset >= PAGE_SIZE)
+	if (*offset >= PAGE_SIZE) {
+		mutex_unlock(&foo_mutex);
 		return 0;
+	}
 
 	if ((*offset) + count <= PAGE_SIZE)
 		numb_rd = count;
@@ -35,6 +41,7 @@ ssize_t foo_read (struct file *filp, char __user *usr_spac_buff, size_t count, l
 
 	*offset += res_numb_rd;
 
+	mutex_unlock(&foo_mutex);
 	return res_numb_rd;
 }
 
@@ -45,11 +52,17 @@ ssize_t foo_write (struct file *filp, const char __user *usr_spac_buff, size_t c
 	printk(KERN_INFO "foo wr offset:%lld\n", *offset);
 	printk(KERN_INFO "foo wr fn count:%zu\n", count);
 
-	if (*offset >= PAGE_SIZE)
-		return -ENOMEM;
+	mutex_lock(&foo_mutex);
 
-	if ((*offset) + count > PAGE_SIZE)
+	if (*offset >= PAGE_SIZE) {
+		mutex_unlock(&foo_mutex);
 		return -ENOMEM;
+	}
+
+	if ((*offset) + count > PAGE_SIZE) {
+		mutex_unlock(&foo_mutex);
+		return -ENOMEM;
+	}
 
 	result = copy_from_user((foo_buff + *offset), usr_spac_buff, count);
 	printk(KERN_INFO "foo wr fn res cpyFromUsr:%d\n", result);
@@ -57,6 +70,7 @@ ssize_t foo_write (struct file *filp, const char __user *usr_spac_buff, size_t c
 	real_wr = count - result;
 	// *offset += real_wr;
 
+	mutex_unlock(&foo_mutex);
 	return real_wr;
 }
 
@@ -177,6 +191,8 @@ int	__init driver_init(void) {
 		printk(KERN_INFO "debugfs 42 Kmalloc error\n");
 		return -ENOMEM;
 	}
+
+	mutex_init(&foo_mutex);
 
 	root42 = debugfs_create_dir("fortytwo", NULL);
 	if (root42 == NULL) {
