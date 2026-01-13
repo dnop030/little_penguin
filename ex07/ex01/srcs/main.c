@@ -76,8 +76,8 @@ ssize_t jiffies_file_read (struct file *filp, char __user *usr_spac_buff, size_t
 	unsigned int	result;
 	unsigned int	res_snprintf;
 
-	printk(KERN_INFO "jiffies rd offset:%lld\n", *offset);
-	printk(KERN_INFO "jiffies offset:%lu totalSec:%u mins:%u secs:%u Hz:%u\n", *offset, total_seconds, mins, secs, HZ);
+	// printk(KERN_INFO "jiffies rd offset:%lld\n", *offset);
+	// printk(KERN_INFO "jiffies offset:%lu totalSec:%u mins:%u secs:%u Hz:%u\n", *offset, total_seconds, mins, secs, HZ);
 
 	// check wheather pointer of file is out of length of data available in kernel or not
 	if (*offset >= buff_len)
@@ -172,7 +172,7 @@ int	__init driver_init(void) {
 	printk(KERN_INFO "debugfs 42 init\n");
 
 	foo_buff = kmalloc(PAGE_SIZE, GFP_KERNEL);
-	printk(KERN_INFO "debugfs 42 kmalloc size:%d\n", PAGE_SIZE);
+	// printk(KERN_INFO "debugfs 42 kmalloc size:%d\n", PAGE_SIZE);
 	if (foo_buff == NULL) {
 		printk(KERN_INFO "debugfs 42 Kmalloc error\n");
 		return -ENOMEM;
