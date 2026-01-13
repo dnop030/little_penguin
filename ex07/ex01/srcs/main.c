@@ -31,7 +31,7 @@ ssize_t foo_read (struct file *filp, char __user *usr_spac_buff, size_t count, l
 	if (*offset >= PAGE_SIZE)
 		return 0;
 
-	if ((*offset) + count < PAGE_SIZE)
+	if ((*offset) + count <= PAGE_SIZE)
 		numb_rd = count;
 	else
 		numb_rd = PAGE_SIZE - (*offset);
@@ -83,14 +83,14 @@ ssize_t foo_write (struct file *filp, const char __user *usr_spac_buff, size_t c
 	if (*offset >= PAGE_SIZE)
 		return -ENOMEM;
 
-	if ((*offset) + count >= PAGE_SIZE)
+	if ((*offset) + count > PAGE_SIZE)
 		return -ENOMEM;
 
 	result = copy_from_user((foo_buff + *offset), usr_spac_buff, count);
 	printk(KERN_INFO "foo wr fn res cpyFromUsr:%d\n", result);
 
 	real_wr = count - result;
-	*offset += real_wr;
+	// *offset += real_wr;
 
 	return real_wr;
 }
