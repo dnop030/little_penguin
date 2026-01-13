@@ -8,24 +8,12 @@ struct dentry *foo;
 char	*foo_buff;
 
 ssize_t foo_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
-	// char	intra_name[9] = "psrikamo";
-	// int	intra_len = strlen(intra_name);
 	int	result;
 	int	numb_rd;
 	int	res_numb_rd;
 
 	printk(KERN_INFO "foo rd offset:%lld\n", *offset);
 	printk(KERN_INFO "foo rd fn count:%zu\n", count);
-
-	// // check wheather pointer of file is out of length of data available in kernel or not
-	// if (*offset >= intra_len)
-	// 	return 0;
-
-	// result = copy_to_user(usr_spac_buff, intra_name, intra_len);
-	// printk(KERN_INFO "id rd fn res cpy2usr:%d\n", result);
-	// *offset += intra_len;
-
-	// return intra_len;
 
 	// case offset morethan memory
 	if (*offset >= PAGE_SIZE)
@@ -51,34 +39,11 @@ ssize_t foo_read (struct file *filp, char __user *usr_spac_buff, size_t count, l
 }
 
 ssize_t foo_write (struct file *filp, const char __user *usr_spac_buff, size_t count, loff_t *offset) {
-	// char	tmp_buff[9];
-	// char	intra_name[9] = "psrikamo";
 	int	result;
 	int	real_wr;
-	// int		i;
 
 	printk(KERN_INFO "foo wr offset:%lld\n", *offset);
 	printk(KERN_INFO "foo wr fn count:%zu\n", count);
-
-	// result = copy_from_user(tmp_buff, usr_spac_buff, strlen(intra_name));
-
-	// if ((tmp_buff[0] == '\n') && (count == 1)) {
-	// 	return count;
-	// }
-
-	// i = 0;
-	// while (i <= strlen(intra_name))
-	// {
-	// 	if (tmp_buff[i] != intra_name[i])
-	// 	{
-	// 		printk(KERN_INFO "id wr fn wrong wr msg\n");
-	// 		return -EINVAL;
-	// 	}
-	// 	i++;
-	// }
-
-	// printk(KERN_INFO "id wr fn correct wr msg\n");
-	// return strlen(intra_name);
 
 	if (*offset >= PAGE_SIZE)
 		return -ENOMEM;
@@ -102,8 +67,8 @@ struct file_operations foo_fops = {
 };
 
 ssize_t jiffies_file_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
-	unsigned long	j = jiffies;				// ดึงค่า jiffies ปัจจุบัน
-	unsigned int	total_seconds = j / HZ;		// แปลงเป็นวินาที
+	unsigned long	j = jiffies;				// git current jiffies's value
+	unsigned int	total_seconds = j / HZ;		// convert to second
 	unsigned int	mins = total_seconds / 60;
 	unsigned int	secs = total_seconds % 60;
 	char	buff[50];
