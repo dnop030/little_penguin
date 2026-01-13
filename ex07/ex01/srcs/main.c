@@ -212,22 +212,6 @@ int	__init driver_init(void) {
 		return -ENODEV;
 	}
 
-	// if root42 != complete
-	// 	clear module and exit
-	// else {
-	// 	create id
-	// 	if create id failed
-	// 		clear id
-
-	// 	create jiffies
-	// 	if create jiffies failed
-	// 		clear jiffies
-
-	// 	create foo
-	// 	if create foo failed
-	// 		clear foo
-	// }
-
 	return 0;
 }
 
