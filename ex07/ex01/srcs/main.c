@@ -5,14 +5,16 @@ struct dentry *id;
 struct dentry *jiffies_file;
 struct dentry *foo;
 
-char	*foo_buff;
+char *foo_buff;
 
 struct mutex foo_mutex;
 
-ssize_t foo_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
-	int	result;
-	int	numb_rd;
-	int	res_numb_rd;
+ssize_t foo_read(struct file *filp, char __user *usr_spac_buff, size_t count,
+		 loff_t *offset)
+{
+	int result;
+	int numb_rd;
+	int res_numb_rd;
 
 	mutex_lock(&foo_mutex);
 
@@ -45,9 +47,11 @@ ssize_t foo_read (struct file *filp, char __user *usr_spac_buff, size_t count, l
 	return res_numb_rd;
 }
 
-ssize_t foo_write (struct file *filp, const char __user *usr_spac_buff, size_t count, loff_t *offset) {
-	int	result;
-	int	real_wr;
+ssize_t foo_write(struct file *filp, const char __user *usr_spac_buff,
+		  size_t count, loff_t *offset)
+{
+	int result;
+	int real_wr;
 
 	printk(KERN_INFO "foo wr offset:%lld\n", *offset);
 	printk(KERN_INFO "foo wr fn count:%zu\n", count);
@@ -80,15 +84,17 @@ struct file_operations foo_fops = {
 	.write = foo_write,
 };
 
-ssize_t jiffies_file_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
-	unsigned long	j = jiffies;				// git current jiffies's value
-	unsigned int	total_seconds = j / HZ;		// convert to second
-	unsigned int	mins = total_seconds / 60;
-	unsigned int	secs = total_seconds % 60;
-	char	buff[50];
-	static unsigned int	buff_len = 50;
-	unsigned int	result;
-	unsigned int	res_snprintf;
+ssize_t jiffies_file_read(struct file *filp, char __user *usr_spac_buff,
+			  size_t count, loff_t *offset)
+{
+	unsigned long j = jiffies; // git current jiffies's value
+	unsigned int total_seconds = j / HZ; // convert to second
+	unsigned int mins = total_seconds / 60;
+	unsigned int secs = total_seconds % 60;
+	char buff[50];
+	static unsigned int buff_len = 50;
+	unsigned int result;
+	unsigned int res_snprintf;
 
 	// printk(KERN_INFO "jiffies rd offset:%lld\n", *offset);
 	// printk(KERN_INFO "jiffies offset:%lu totalSec:%u mins:%u secs:%u Hz:%u\n", *offset, total_seconds, mins, secs, HZ);
@@ -98,7 +104,8 @@ ssize_t jiffies_file_read (struct file *filp, char __user *usr_spac_buff, size_t
 		return 0;
 
 	printk(KERN_INFO "jiffies rd fn count:%zu\n", count);
-	res_snprintf = snprintf(buff, 26,"uptime: %.2u min %.2u sec\n", mins, secs);
+	res_snprintf =
+		snprintf(buff, 26, "uptime: %.2u min %.2u sec\n", mins, secs);
 	buff_len = strlen(buff);
 	result = copy_to_user(usr_spac_buff, buff, buff_len);
 	printk(KERN_INFO "jiffies rd fn res cpy2usr:%d\n", result);
@@ -113,10 +120,12 @@ struct file_operations jiffies_file_fops = {
 	// .write = id_write,
 };
 
-ssize_t id_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
-	char	intra_name[9] = "psrikamo";
-	int	intra_len = strlen(intra_name);
-	int	result;
+ssize_t id_read(struct file *filp, char __user *usr_spac_buff, size_t count,
+		loff_t *offset)
+{
+	char intra_name[9] = "psrikamo";
+	int intra_len = strlen(intra_name);
+	int result;
 
 	printk(KERN_INFO "id rd offset:%lld\n", *offset);
 
@@ -133,11 +142,13 @@ ssize_t id_read (struct file *filp, char __user *usr_spac_buff, size_t count, lo
 	return intra_len;
 }
 
-ssize_t id_write (struct file *filp, const char __user *usr_spac_buff, size_t count, loff_t *offset) {
-	char	tmp_buff[9];
-	char	intra_name[9] = "psrikamo";
-	int		result;
-	int		i;
+ssize_t id_write(struct file *filp, const char __user *usr_spac_buff,
+		 size_t count, loff_t *offset)
+{
+	char tmp_buff[9];
+	char intra_name[9] = "psrikamo";
+	int result;
+	int i;
 
 	printk(KERN_INFO "id wr offset:%lld\n", *offset);
 	printk(KERN_INFO "id wr fn count:%zu\n", count);
@@ -149,10 +160,8 @@ ssize_t id_write (struct file *filp, const char __user *usr_spac_buff, size_t co
 	// }
 
 	i = 0;
-	while (i <= strlen(intra_name))
-	{
-		if (tmp_buff[i] != intra_name[i])
-		{
+	while (i <= strlen(intra_name)) {
+		if (tmp_buff[i] != intra_name[i]) {
 			printk(KERN_INFO "id wr fn wrong wr msg\n");
 			return -EINVAL;
 		}
@@ -181,8 +190,8 @@ struct file_operations id_fops = {
 	// .release = id_release,
 };
 
-int	__init driver_init(void) {
-
+int __init driver_init(void)
+{
 	printk(KERN_INFO "debugfs 42 init\n");
 
 	mutex_init(&foo_mutex);
@@ -194,29 +203,24 @@ int	__init driver_init(void) {
 	}
 
 	// debugfs_create_file(const char *name, umode_t mode,
-    //                                struct dentry *parent, void *data,
-    //                                const struct file_operations *fops)
+	//                                struct dentry *parent, void *data,
+	//                                const struct file_operations *fops)
 
 	// id = debugfs_create_file("id", S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH,
-    //                                root42, NULL,
-    //                                &id_fops);
-	id = debugfs_create_file("id", 0666,
-                                   root42, NULL,
-                                   &id_fops);
+	//                                root42, NULL,
+	//                                &id_fops);
+	id = debugfs_create_file("id", 0666, root42, NULL, &id_fops);
 	if (id == NULL) {
 		return -ENODEV;
 	}
 
-	jiffies_file = debugfs_create_file("jiffies", 0444,
-                                   root42, NULL,
-                                   &jiffies_file_fops);
+	jiffies_file = debugfs_create_file("jiffies", 0444, root42, NULL,
+					   &jiffies_file_fops);
 	if (jiffies_file == NULL) {
 		return -ENODEV;
 	}
 
-	foo = debugfs_create_file("foo", 0644,
-                                   root42, NULL,
-                                   &foo_fops);
+	foo = debugfs_create_file("foo", 0644, root42, NULL, &foo_fops);
 	if (foo == NULL) {
 		return -ENODEV;
 	}
@@ -231,7 +235,8 @@ int	__init driver_init(void) {
 	return 0;
 }
 
-void	__exit driver_exit(void) {
+void __exit driver_exit(void)
+{
 	printk(KERN_INFO "debugfs 42 clean-up\n");
 	kfree(foo_buff);
 	debugfs_remove(root42);
