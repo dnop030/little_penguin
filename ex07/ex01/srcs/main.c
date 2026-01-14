@@ -185,13 +185,6 @@ int	__init driver_init(void) {
 
 	printk(KERN_INFO "debugfs 42 init\n");
 
-	foo_buff = kmalloc(PAGE_SIZE, GFP_KERNEL);
-	// printk(KERN_INFO "debugfs 42 kmalloc size:%d\n", PAGE_SIZE);
-	if (foo_buff == NULL) {
-		printk(KERN_INFO "debugfs 42 Kmalloc error\n");
-		return -ENOMEM;
-	}
-
 	mutex_init(&foo_mutex);
 
 	root42 = debugfs_create_dir("fortytwo", NULL);
@@ -226,6 +219,13 @@ int	__init driver_init(void) {
                                    &foo_fops);
 	if (foo == NULL) {
 		return -ENODEV;
+	}
+
+	foo_buff = kmalloc(PAGE_SIZE, GFP_KERNEL);
+	// printk(KERN_INFO "debugfs 42 kmalloc size:%d\n", PAGE_SIZE);
+	if (foo_buff == NULL) {
+		printk(KERN_INFO "debugfs 42 Kmalloc error\n");
+		return -ENOMEM;
 	}
 
 	return 0;
