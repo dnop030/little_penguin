@@ -160,7 +160,7 @@ ssize_t id_write(struct file *filp, const char __user *usr_spac_buff,
 	// }
 
 	i = 0;
-	while (i <= strlen(intra_name)) {
+	while (i < strlen(intra_name)) {
 		if (tmp_buff[i] != intra_name[i]) {
 			printk(KERN_INFO "id wr fn wrong wr msg\n");
 			return -EINVAL;

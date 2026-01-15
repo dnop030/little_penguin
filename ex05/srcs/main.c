@@ -33,7 +33,7 @@ ssize_t fortwo_write (struct file *filp, const char __user *usr_spac_buff, size_
 	// }
 
 	i = 0;
-	while (i <= strlen(intra_name))
+	while (i < strlen(intra_name))
 	{
 		if (tmp_buff[i] != intra_name[i])
 		{
