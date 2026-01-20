@@ -59,7 +59,7 @@ int fortwo_release(struct inode *inode, struct file *filp)
 	return 0;
 }
 
-struct file_operations fops = {
+const struct file_operations fops = {
 	.owner = THIS_MODULE,
 	.read = fortwo_read,
 	.write = fortwo_write,
