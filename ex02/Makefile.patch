@@ -1,3 +1,8 @@
+From dbacc239d42005a2f6281419a0642bc1984bc6ac Fri Jan 16 00:58:16 2026
+From psrikamo <psrikamo@42.com>
+Date Tue, 20 Jan 2026 01:00:00 +0700
+Subject [PATCH] LFS: [Makefile] update extraversion according to subject
+
 --- Makefile.bak	2025-06-10 13:33:55.079403038 +0700
 +++ Makefile	2025-06-10 13:35:35.919640113 +0700
 @@ -2,7 +2,7 @@
@@ -7,5 +12,5 @@
 -EXTRAVERSION =
 +EXTRAVERSION = -thor_kernel
  NAME = Baby Opossum Posse
- 
+
  # *DOCUMENTATION*
