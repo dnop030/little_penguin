@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-2.0
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -28,23 +29,26 @@ char str[PAGE_SIZE];
 static int __init myfd_init(void)
 {
 	int retval;
+
 	retval = misc_register(&(*(&(myfd_device))));
 	printk(KERN_INFO "useless init fn\n");
 	return retval;
 }
+
 static void __exit myfd_cleanup(void)
 {
 	misc_deregister(&myfd_device);
 	printk(KERN_INFO "useless cleanup fn\n");
 }
+
 ssize_t myfd_read(struct file *fp, char __user *user, size_t size, loff_t *offs)
 {
 	size_t t, i;
 	char *tmp2;
 	ssize_t ret;
 	/***************
-	* Malloc like a boss
-	***************/
+	 * Malloc like a boss
+	 ***************/
 	// tmp2 = kmalloc(sizeof(char) * PAGE_SIZE * 2, GFP_KERNEL);
 	tmp2 = kmalloc(sizeof(char) * PAGE_SIZE, GFP_KERNEL);
 	if (!tmp2) {
@@ -67,10 +71,12 @@ ssize_t myfd_read(struct file *fp, char __user *user, size_t size, loff_t *offs)
 	kfree(tmp2);
 	return ret;
 }
+
 ssize_t myfd_write(struct file *fp, const char __user *user, size_t size,
 		   loff_t *offs)
 {
 	ssize_t res;
+
 	res = 0;
 	res = simple_write_to_buffer(str, size, offs, user, size);
 	// 0x0 = ’\0’
