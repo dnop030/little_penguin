@@ -1,3 +1,15 @@
+From 15359cf9c34c5dd392b14dd47470a8892c1496fd Tue Jan 20 20:37:51 2026
+From: psrikamo <psrikamo@42bangkok.com>
+Date: Tue, 20 Jan 2026 20:54:42 +0700
+Subject: [PATCH] LFS: [Makefile] add extraversion
+
+Signed-off-by: psrikamo <psrikamo@42bangkok.com>
+
+/Makefile | 1 +
+1 file changed, 1 insertion(+)
+
+diff -uprN Makefile.bak Makefile > Makefile.patch
+
 --- Makefile.bak	2025-06-10 13:33:55.079403038 +0700
 +++ Makefile	2025-06-10 13:35:35.919640113 +0700
 @@ -2,7 +2,7 @@
@@ -7,5 +19,5 @@
 -EXTRAVERSION =
 +EXTRAVERSION = -thor_kernel
  NAME = Baby Opossum Posse
- 
+
  # *DOCUMENTATION*
