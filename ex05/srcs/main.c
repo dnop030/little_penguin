@@ -1,6 +1,8 @@
+// SPDX-License-Identifier: GPL-2.0
 #include "../include/main.h"
 
-ssize_t fortwo_read (struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset) {
+ssize_t fortwo_read(struct file *filp, char __user *usr_spac_buff, size_t count, loff_t *offset)
+{
 	char	intra_name[9] = "psrikamo";
 	int	intra_len = strlen(intra_name);
 	int	result;
@@ -20,7 +22,8 @@ ssize_t fortwo_read (struct file *filp, char __user *usr_spac_buff, size_t count
 	return intra_len;
 }
 
-ssize_t fortwo_write (struct file *filp, const char __user *usr_spac_buff, size_t count, loff_t *offset) {
+ssize_t fortwo_write(struct file *filp, const char __user *usr_spac_buff, size_t count, loff_t *offset)
+{
 	char	tmp_buff[9];
 	char	intra_name[9] = "psrikamo";
 	int		result;
@@ -29,14 +32,12 @@ ssize_t fortwo_write (struct file *filp, const char __user *usr_spac_buff, size_
 	result = copy_from_user(tmp_buff, usr_spac_buff, strlen(intra_name));
 
 	// if ((tmp_buff[0] == '\n') && (count == 1)) {
-	// 	return count;
+	//	return count;
 	// }
 
 	i = 0;
-	while (i < strlen(intra_name))
-	{
-		if (tmp_buff[i] != intra_name[i])
-		{
+	while (i < strlen(intra_name)) {
+		if (tmp_buff[i] != intra_name[i]) {
 			printk(KERN_INFO "42 wr fn wrong wr msg\n");
 			return -EINVAL;
 		}
@@ -46,12 +47,14 @@ ssize_t fortwo_write (struct file *filp, const char __user *usr_spac_buff, size_
 	return strlen(intra_name);
 }
 
-int fortwo_open (struct inode *inode, struct file *filp) {
+int fortwo_open(struct inode *inode, struct file *filp)
+{
 	printk(KERN_INFO "42 open fn\n");
 	return 0;
 }
 
-int fortwo_release (struct inode *inode, struct file *filp) {
+int fortwo_release(struct inode *inode, struct file *filp)
+{
 	printk(KERN_INFO "42 release fn\n");
 	return 0;
 }
@@ -66,15 +69,15 @@ struct file_operations fops = {
 
 // // Misc device structure
 // struct miscdevice {
-// 	int minor;
-// 	const char *name;
-// 	const struct file_operations *fops;
-// 	struct list_head list;
-// 	struct device *parent;
-// 	struct device *this_device;
-// 	const struct attribute_group **groups;
-// 	const char *nodename;
-// 	umode_t mode;
+//	int minor;
+//	const char *name;
+//	const struct file_operations *fops;
+//	struct list_head list;
+//	struct device *parent;
+//	struct device *this_device;
+//	const struct attribute_group **groups;
+//	const char *nodename;
+//	umode_t mode;
 // };
 struct miscdevice fortytwo_misc_chr_dev = {
 	.minor = MISC_DYNAMIC_MINOR,
@@ -82,8 +85,8 @@ struct miscdevice fortytwo_misc_chr_dev = {
 	.fops = &fops,
 };
 
-// int	__init driver_init(void) {
-int	__init fortwo_init(void) {
+int	__init driver_init(void)
+{
 	int	err_num;
 
 	// register misc driver
@@ -97,7 +100,8 @@ int	__init fortwo_init(void) {
 	return 0;
 }
 
-void	__exit driver_exit(void) {
+void	__exit driver_exit(void)
+{
 	misc_deregister(&fortytwo_misc_chr_dev);
 	printk(KERN_INFO "Cleaning up misc chr.\n");
 }
