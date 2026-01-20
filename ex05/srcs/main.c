@@ -22,7 +22,8 @@ ssize_t fortwo_read(struct file *filp, char __user *usr_spac_buff, size_t count,
 	return intra_len;
 }
 
-ssize_t fortwo_write(struct file *filp, const char __user *usr_spac_buff, size_t count, loff_t *offset)
+ssize_t fortwo_write(struct file *filp, const char __user *usr_spac_buff,
+		     size_t count, loff_t *offset)
 {
 	char	tmp_buff[9];
 	char	intra_name[9] = "psrikamo";
