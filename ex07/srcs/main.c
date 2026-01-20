@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-2.0
 #include "../include/main.h"
 
 struct dentry *root42;
@@ -7,7 +8,7 @@ struct dentry *foo;
 
 char *foo_buff;
 
-struct mutex foo_mutex;
+struct mutex foo_mutex; // mutex for foo
 
 ssize_t foo_read(struct file *filp, char __user *usr_spac_buff, size_t count,
 		 loff_t *offset)
@@ -78,7 +79,7 @@ ssize_t foo_write(struct file *filp, const char __user *usr_spac_buff,
 	return real_wr;
 }
 
-struct file_operations foo_fops = {
+const struct file_operations foo_fops = {
 	.owner = THIS_MODULE,
 	.read = foo_read,
 	.write = foo_write,
@@ -97,7 +98,8 @@ ssize_t jiffies_file_read(struct file *filp, char __user *usr_spac_buff,
 	unsigned int res_snprintf;
 
 	// printk(KERN_INFO "jiffies rd offset:%lld\n", *offset);
-	// printk(KERN_INFO "jiffies offset:%lu totalSec:%u mins:%u secs:%u Hz:%u\n", *offset, total_seconds, mins, secs, HZ);
+	// printk(KERN_INFO "jiffies offset:%lu totalSec:%u mins:%u secs:%u Hz:%u\n",
+	//		*offset, total_seconds, mins, secs, HZ);
 
 	// check wheather pointer of file is out of length of data available in kernel or not
 	if (*offset >= buff_len)
@@ -114,7 +116,7 @@ ssize_t jiffies_file_read(struct file *filp, char __user *usr_spac_buff,
 	return buff_len;
 }
 
-struct file_operations jiffies_file_fops = {
+const struct file_operations jiffies_file_fops = {
 	.owner = THIS_MODULE,
 	.read = jiffies_file_read,
 	// .write = id_write,
@@ -182,7 +184,7 @@ ssize_t id_write(struct file *filp, const char __user *usr_spac_buff,
 // 	return 0;
 // }
 
-struct file_operations id_fops = {
+const struct file_operations id_fops = {
 	.owner = THIS_MODULE,
 	.read = id_read,
 	.write = id_write,
@@ -197,7 +199,7 @@ int __init driver_init(void)
 	mutex_init(&foo_mutex);
 
 	root42 = debugfs_create_dir("fortytwo", NULL);
-	if (root42 == NULL) {
+	if (!root42) {
 		printk(KERN_INFO "debugfs 42 create dir error\n");
 		return -ENODEV;
 	}
@@ -210,24 +212,21 @@ int __init driver_init(void)
 	//                                root42, NULL,
 	//                                &id_fops);
 	id = debugfs_create_file("id", 0666, root42, NULL, &id_fops);
-	if (id == NULL) {
+	if (!id)
 		return -ENODEV;
-	}
 
 	jiffies_file = debugfs_create_file("jiffies", 0444, root42, NULL,
 					   &jiffies_file_fops);
-	if (jiffies_file == NULL) {
+	if (!jiffies_file)
 		return -ENODEV;
-	}
 
 	foo = debugfs_create_file("foo", 0644, root42, NULL, &foo_fops);
-	if (foo == NULL) {
+	if (!foo)
 		return -ENODEV;
-	}
 
 	foo_buff = kmalloc(PAGE_SIZE, GFP_KERNEL);
 	// printk(KERN_INFO "debugfs 42 kmalloc size:%d\n", PAGE_SIZE);
-	if (foo_buff == NULL) {
+	if (!foo_buff) {
 		printk(KERN_INFO "debugfs 42 Kmalloc error\n");
 		return -ENOMEM;
 	}
