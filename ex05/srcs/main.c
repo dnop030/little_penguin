@@ -86,7 +86,7 @@ struct miscdevice fortytwo_misc_chr_dev = {
 	.fops = &fops,
 };
 
-int	__init driver_init(void)
+int	__init fortwo_init(void)
 {
 	int	err_num;
 
