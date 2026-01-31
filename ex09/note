@@ -1,0 +1,9 @@
+Three aspects of seq_file
+	* An iterator interface which lets a virtual file implementation
+       step through the objects it is presenting.
+
+     * Some utility functions for formatting objects for output without
+       needing to worry about things like output buffers.
+
+     * A set of canned file_operations which implement most operations on
+       the virtual file.
